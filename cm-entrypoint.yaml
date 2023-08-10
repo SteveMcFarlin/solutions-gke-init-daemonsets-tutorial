@@ -63,6 +63,7 @@ data:
     echo "Installing nano"
     chroot "${ROOT_MOUNT_DIR}" apt-get update
     chroot "${ROOT_MOUNT_DIR}" apt-get install -y nano
+    chroot "${ROOT_MOUNT_DIR}" apt-get install -y xvfb
 
     echo "Loading Kernel modules"
     # Load the bridge kernel module as an example
