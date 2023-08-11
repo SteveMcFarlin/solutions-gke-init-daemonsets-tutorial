@@ -64,7 +64,32 @@ data:
     chroot "${ROOT_MOUNT_DIR}" apt-get update
     chroot "${ROOT_MOUNT_DIR}" apt-get install -y nano
     chroot "${ROOT_MOUNT_DIR}" apt-get install -y xvfb
-    chroot "${ROOT_MOUNT_DIR}" apt-get install -y xserver-xorg-dev xutils-dev x11-xserver-utils
+    chroot "${ROOT_MOUNT_DIR}" apt-get install wget
+
+    chroot "${ROOT_MOUNT_DIR}" mkdir deps
+    chroot "${ROOT_MOUNT_DIR}" pushd deps
+    chroot "${ROOT_MOUNT_DIR}" wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+    chroot "${ROOT_MOUNT_DIR}" sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    chroot "${ROOT_MOUNT_DIR}" wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
+    chroot "${ROOT_MOUNT_DIR}" sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
+    chroot "${ROOT_MOUNT_DIR}" sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+    chroot "${ROOT_MOUNT_DIR}" sudo apt update
+    chroot "${ROOT_MOUNT_DIR}" sudo apt install -y cuda
+    chroot "${ROOT_MOUNT_DIR}" popd
+    chroot "${ROOT_MOUNT_DIR}" rm -R deps
+
+    # Install container runtime
+    chroot "${ROOT_MOUNT_DIR}" curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | \
+    chroot "${ROOT_MOUNT_DIR}" sudo apt-key add - 
+    chroot "${ROOT_MOUNT_DIR}" distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+    chroot "${ROOT_MOUNT_DIR}" curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.list | \
+    chroot "${ROOT_MOUNT_DIR}" sudo tee /etc/apt/sources.list.d/nvidia-container-runtime.list
+    chroot "${ROOT_MOUNT_DIR}" sudo apt update
+    chroot "${ROOT_MOUNT_DIR}" sudo apt install -y nvidia-container-runtime
+
+    #Install X-Org
+    chroot "${ROOT_MOUNT_DIR}" sudo apt install -y xserver-xorg-dev xutils-dev x11-xserver-utils
+
 
     echo "Loading Kernel modules"
     # Load the bridge kernel module as an example
