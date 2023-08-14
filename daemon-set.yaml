@@ -39,7 +39,7 @@ spec:
             name: entrypoint
             defaultMode: 0744
       initContainers:
-        - image: ubuntu:22.04
+        - image: ubuntu:18.04
           name: node-initializer
           command: ["/scripts/entrypoint.sh"]
           env:

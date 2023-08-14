@@ -67,7 +67,7 @@ data:
     chroot "${ROOT_MOUNT_DIR}" apt-get install wget
 
     # Install X-Org
-    # chroot "${ROOT_MOUNT_DIR}" sudo apt install -y xserver-xorg-dev xutils-dev x11-xserver-utils
+    chroot "${ROOT_MOUNT_DIR}" sudo apt install -y xserver-xorg-dev xutils-dev x11-xserver-utils
 
     # chroot "${ROOT_MOUNT_DIR}" mkdir deps
     # chroot "${ROOT_MOUNT_DIR}" pushd deps
